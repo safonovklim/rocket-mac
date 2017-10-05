@@ -1,0 +1,7 @@
+.idea
+rocket/my.backup.cfg
+rocket/my.cfg
+.git
+.DS_Store
+*.pyc
+*.pyo

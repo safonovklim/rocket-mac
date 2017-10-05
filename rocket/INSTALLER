@@ -1,0 +1,22 @@
+#!/bin/sh
+
+TEXT_BOLD='\033[1m'
+TEXT_INVERTED='\033[7m'
+NC='\033[0m' # No Color
+
+# Install plugin dependencies
+echo "
+============================================================
+🚀 ${TEXT_BOLD}Рокетбанк ${NC} для macOS
+============================================================
+\n"
+echo "Если что-то пошло не так, нажимайте Command + Q"
+echo "Устанавливаем нужные шутки..."
+yes | pip install requests --quiet
+
+echo "Готово! Давайте знакомиться :)\n"
+
+script_name="install.py"
+dir_path=$(dirname "$0")
+
+python3 "$dir_path/$script_name"
