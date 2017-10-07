@@ -1,22 +1,43 @@
 #!/bin/sh
 
+script_name="install.py"
+dir_path=$(dirname "$0")
+
 TEXT_BOLD='\033[1m'
 TEXT_INVERTED='\033[7m'
 NC='\033[0m' # No Color
 
-# Install plugin dependencies
+
 echo "
 ============================================================
 🚀 ${TEXT_BOLD}Рокетбанк ${NC} для macOS
 ============================================================
-\n"
-echo "Если что-то пошло не так, нажимайте Command + Q"
-echo "Устанавливаем нужные шутки..."
-yes | pip install requests --quiet
+\n
+Сейчас мы проверим и установим (если еще нету) нужное ПО (brew, python3, pip)
+Если что-то пошло не так, нажимайте Command + Q
+\n\n"
 
-echo "Готово! Давайте знакомиться :)\n"
 
-script_name="install.py"
-dir_path=$(dirname "$0")
+chmod +x "$dir_path/../rocketbank.5m.py"
+[ -f "$dir_path/../README.md" ] && rm "$dir_path/../README.md"
+[ -f "$dir_path/../LICENSE" ] && rm "$dir_path/../LICENSE"
+[ -f "$dir_path/../.gitignore" ] && rm "$dir_path/../.gitignore"
+[ -f "$dir_path/../LATEST_BUILD.json" ] && rm "$dir_path/../LATEST_BUILD.json"
+
+if ! [[ $(which -a python3) ]]; then
+    echo "Пару минут, пожалуйста!"
+    if ! [[ $(which -a brew) ]]; then
+        yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+        yes | brew doctor
+    fi
+    yes | brew install python3
+fi
+if ! [[ $(which -a pip) ]]; then
+    python3 get-pip.py
+fi
+yes | pip3 install requests --quiet
+touch "$dir_path/my.cfg"
+
+echo "\nГотово! Давайте знакомиться :)\n"
 
 python3 "$dir_path/$script_name"

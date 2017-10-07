@@ -4,27 +4,42 @@ import base64
 import hashlib
 import os
 import uuid
+import json
 
 CONFIG_FILE_NAME = os.path.dirname(os.path.realpath(__file__)) + '/my.cfg'
+PROFILE_JSON_FILE_NAME = os.path.dirname(os.path.realpath(__file__)) + '/_profile.json'
+FEED_JSON_FILE_NAME = os.path.dirname(os.path.realpath(__file__)) + '/_feed.json'
+
+APP_VERSION = '1.0'
+APP_BUILD = 1
+APP_LINK_GITHUB = 'https://github.com/safonovklim/rocket-mac'
+APP_LINK_TELEGRAM = 'https://t.me/rocket_mac'
+APP_LATEST_VERSION_URL = 'https://raw.githubusercontent.com/safonovklim/rocket-mac/master/LATEST_BUILD.json'
+
 
 API_HOST = 'https://rocketbank.ru/api/v5/'
-
 APN_TOKEN = '0c2c476d4c5dd54b6b429bd9c00159f36f50b13338df728326e8fb8976936330'
+
 API_ROUTE_LOGIN = 'login'
+API_ROUTE_PROFILE = 'profile'
 API_ROUTE_GET_TRANSACTIONS = 'operations/nano_feed'
 API_ROUTE_REGISTER = 'devices/register'
 
 CFG_SHOW_PUSH = 'CFG_SHOW_PUSH'
 CFG_SHOW_FRIENDS = 'CFG_SHOW_FRIENDS'
 CFG_SHOW_CARDS = 'CFG_SHOW_CARDS'
+CFG_SHOW_SAFE_ACCOUNTS = 'CFG_SHOW_SAFE_ACCOUNTS'
+CFG_SHOW_DEPOSITS = 'CFG_SHOW_DEPOSITS'
 CFG_SHOW_EXCHANGE_RATES = 'CFG_SHOW_EXCHANGE_RATES'
 CFG_SHOW_LATEST_TRANSACTIONS = 'CFG_SHOW_LATEST_TRANSACTIONS'
-CFG_SHOW_SUPPORT = 'CFG_SHOW_SUPPORT'
 CFG_EXPIRED_TOKEN_TIMEOUT = 'CFG_EXPIRED_TOKEN_TIMEOUT'
 CFG_AUTH_LOGIN = 'CFG_AUTH_LOGIN'
 CFG_AUTH_PASSCODE = 'CFG_AUTH_PASSCODE'
 CFG_DEVICE_ID = 'CFG_DEVICE_ID'
 CFG_USER_CONFIGURED = 'CFG_USER_CONFIGURED'
+CFG_TOKEN_UNSUCCESSFUL_USAGE = 'CFG_TOKEN_UNSUCCESSFUL_USAGE'
+CFG_USER_TOKEN = 'CFG_USER_TOKEN'
+CFG_TOKEN_MAX_UNSUCCESSFUL_USAGE = 'CFG_TOKEN_MAX_UNSUCCESSFUL_USAGE'
 
 # ===================================================================================================
 # Configuration file
@@ -57,7 +72,7 @@ def write_file_config(config):
     for key, value in config.items():
         new_config[key] = value
 
-    f = open(CONFIG_FILE_NAME, 'w')
+    f = open(CONFIG_FILE_NAME, 'w+')
 
     for key, value in new_config.items():
         f.write(str(key) + "=" + str(value) + "\n")
@@ -75,7 +90,7 @@ def parse_cfg_bool(key, config):
 
 
 def parse_cfg_int(key, config):
-    return int(config[key]) if key in config else None
+    return int(config[key]) if key in config else 0
 
 
 def get_config():
@@ -84,14 +99,18 @@ def get_config():
         CFG_SHOW_PUSH: False,
         CFG_SHOW_FRIENDS: False,
         CFG_SHOW_CARDS: True,
+        CFG_SHOW_SAFE_ACCOUNTS: True,
+        CFG_SHOW_DEPOSITS: True,
         CFG_SHOW_EXCHANGE_RATES: True,
         CFG_SHOW_LATEST_TRANSACTIONS: True,
-        CFG_SHOW_SUPPORT: True,
         CFG_EXPIRED_TOKEN_TIMEOUT: 3600,
+        CFG_TOKEN_MAX_UNSUCCESSFUL_USAGE: 2,
         CFG_AUTH_LOGIN: parse_cfg_string(CFG_AUTH_LOGIN, file_config),
         CFG_AUTH_PASSCODE: parse_cfg_int(CFG_AUTH_PASSCODE, file_config),
         CFG_DEVICE_ID: parse_cfg_string(CFG_DEVICE_ID, file_config),
-        CFG_USER_CONFIGURED: parse_cfg_bool(CFG_USER_CONFIGURED, file_config)
+        CFG_USER_CONFIGURED: parse_cfg_bool(CFG_USER_CONFIGURED, file_config),
+        CFG_TOKEN_UNSUCCESSFUL_USAGE: parse_cfg_int(CFG_TOKEN_UNSUCCESSFUL_USAGE, file_config),
+        CFG_USER_TOKEN: parse_cfg_string(CFG_USER_TOKEN, file_config),
     }
     return config
 
@@ -182,6 +201,18 @@ def create_authorization_header_by_token(token):
     return 'Token token=' + token
 
 
+def get_profile(token):
+    options = {
+        'headers': {
+            "Authorization": create_authorization_header_by_token(token)
+        },
+        'query': {
+            'apn_token': APN_TOKEN
+        }
+    }
+    return api_get(API_ROUTE_PROFILE, options)
+
+
 def get_transactions(token, page = 1, per_page = 10):
     options = {
         'headers': {
@@ -259,3 +290,40 @@ def confirm_app_code(login_token, passcode):
         return result_ok, result.json()
     else:
         return result_ok, result.json()['response']['description']
+
+
+def is_update_available():
+    response = requests.get(APP_LATEST_VERSION_URL)
+
+    if is_response_ok(response):
+        response_json = response.json()
+        if response_json['build'] > APP_BUILD:
+            return True, response_json
+
+    return False, {}
+
+
+def is_login_required(config):
+    if not config[CFG_USER_TOKEN]:
+        return True
+    if config[CFG_TOKEN_UNSUCCESSFUL_USAGE] >= config[CFG_TOKEN_MAX_UNSUCCESSFUL_USAGE]:
+        return True
+    return False
+
+# ===================================================================================================
+# JSON cache files
+# ===================================================================================================
+
+
+def read_json(file):
+    with open(file, "r") as f:
+        data = json.load(f)
+
+    f.close()
+    return data
+
+
+def write_json(data, file):
+    with open(file, "w+") as f:
+        json.dump(data, f)
+    f.close()

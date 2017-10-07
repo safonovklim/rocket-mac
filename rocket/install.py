@@ -18,12 +18,16 @@ if __name__ == "__main__":
             step3_ok, step3_meta = core.confirm_app_code(auth_login, app_code)
 
             if step3_ok:
-                print('Все отлично, ' + user['first_name'] + '! Теперь Вы можете пользоваться Рокетом для Mac')
                 core.write_file_config({
                     core.CFG_AUTH_LOGIN: auth_login,
                     core.CFG_AUTH_PASSCODE: app_code,
                     core.CFG_USER_CONFIGURED: '1'
                 })
+
+                print('Все отлично, ' + user['first_name'] + '!')
+                print('Теперь Вы можете пользоваться Рокетбанком для Mac')
+                print('Справа наверху нажмите BitBar -> Refresh all (Пункт "BitBar" скоро пропадет)\n\n')
+                print('Можете закрыть это окно (Command + Q)\n\n\n\n')
             else:
                 print(step3_meta)
                 print('Попробуйте снова.')

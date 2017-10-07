@@ -1,7 +1,8 @@
 .idea
-rocket/my.backup.cfg
-rocket/my.cfg
+rocket/*.cfg
+rocket/*.json
 .git
 .DS_Store
 *.pyc
 *.pyo
+__init__.py
