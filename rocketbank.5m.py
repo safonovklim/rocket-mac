@@ -7,7 +7,6 @@
 # <bitbar.desc>It showing short info about your account</bitbar.desc>
 # <bitbar.dependencies>python</bitbar.dependencies>
 import sys
-import requests
 from rocket import formatters as f, core
 
 print('🚀') # Logo in status bar
