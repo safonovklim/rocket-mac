@@ -151,7 +151,12 @@ def app_version(version, build):
 
 def new_version(available = False, nvjson = {}):
     if available:
-        return 'Установите новую версию ' + nvjson['build_label'] + '|href=' + nvjson['upgrade_faq_url']
+        result = 'Установите новую версию ' + str(nvjson['build_label'])
+        
+        if nvjson['upgrade_faq_url'] != None:
+            result += '|href=' + nvjson['upgrade_faq_url']
+
+        return result
     else:
         return 'Нет обновлений'
 
