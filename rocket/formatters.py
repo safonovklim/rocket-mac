@@ -109,21 +109,21 @@ def get_account_details(account):
     d = account['account_details']
     rows = []
     if account['currency'] == 'RUB':
-        rows.append('БИК: ' + d['bic'])
-        rows.append('Банк: ' + d['bank_name'])
-        rows.append('Корреспондентский счет: ' + d['ks'])
-        rows.append('Номер счета: ' + d['account'])
-        rows.append('Получатель: ' + d['owner'])
-        rows.append('Назначение платежа: ' + d['goal'])
-        rows.append('ИНН: ' + d['inn'])
-        rows.append('КПП: ' + d['kpp'])
+        rows.append('БИК: ' + str(d['bic']))
+        rows.append('Банк: ' + str(d['bank_name']))
+        rows.append('Корреспондентский счет: ' + str(d['ks']))
+        rows.append('Номер счета: ' + str(d['account']))
+        rows.append('Получатель: ' + str(d['owner']))
+        rows.append('Назначение платежа: ' + str(d['goal']))
+        rows.append('ИНН: ' + str(d['inn']))
+        rows.append('КПП: ' + str(d['kpp']))
     else:
-        rows.append('Банк корреспондент: ' + d['corr'])
-        rows.append('Банк получателя: ' + d['benef_bank'])
-        rows.append('Адрес банка получателя: ' + d['benef_bank_address'])
-        rows.append('SWIFT: ' + d['benef_swift'])
-        rows.append('Получатель: ' + d['owner'])
-        rows.append('Номер счета: ' + d['account'])
+        rows.append('Банк корреспондент: ' + str(d['corr']))
+        rows.append('Банк получателя: ' + str(d['benef_bank']))
+        rows.append('Адрес банка получателя: ' + str(d['benef_bank_address']))
+        rows.append('SWIFT: ' + str(d['benef_swift']))
+        rows.append('Получатель: ' + str(d['owner']))
+        rows.append('Номер счета: ' + str(d['account']))
 
     return rows
 
