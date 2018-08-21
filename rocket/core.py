@@ -10,8 +10,8 @@ CONFIG_FILE_NAME = os.path.dirname(os.path.realpath(__file__)) + '/my.cfg'
 PROFILE_JSON_FILE_NAME = os.path.dirname(os.path.realpath(__file__)) + '/_profile.json'
 FEED_JSON_FILE_NAME = os.path.dirname(os.path.realpath(__file__)) + '/_feed.json'
 
-APP_VERSION = '1.0'
-APP_BUILD = 1
+APP_VERSION = '1.0.1'
+APP_BUILD = 2
 APP_LINK_GITHUB = 'https://github.com/safonovklim/rocket-mac'
 APP_LINK_TELEGRAM = 'https://t.me/rocket_mac'
 APP_LATEST_VERSION_URL = 'https://raw.githubusercontent.com/safonovklim/rocket-mac/master/LATEST_BUILD.json'
