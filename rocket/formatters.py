@@ -109,21 +109,47 @@ def get_account_details(account):
     d = account['account_details']
     rows = []
     if account['currency'] == 'RUB':
-        rows.append('БИК: ' + str(d['bic']))
-        rows.append('Банк: ' + str(d['bank_name']))
-        rows.append('Корреспондентский счет: ' + str(d['ks']))
-        rows.append('Номер счета: ' + str(d['account']))
-        rows.append('Получатель: ' + str(d['owner']))
-        rows.append('Назначение платежа: ' + str(d['goal']))
-        rows.append('ИНН: ' + str(d['inn']))
-        rows.append('КПП: ' + str(d['kpp']))
+        if 'bic' in d:
+            rows.append('БИК: ' + str(d['bic']))
+
+        if 'bank_name' in d:
+            rows.append('Банк: ' + str(d['bank_name']))
+
+        if 'ks' in d:
+            rows.append('Корреспондентский счет: ' + str(d['ks']))
+
+        if 'account' in d:
+            rows.append('Номер счета: ' + str(d['account']))
+
+        if 'owner' in d:
+            rows.append('Получатель: ' + str(d['owner']))
+
+        if 'goal' in d:
+            rows.append('Назначение платежа: ' + str(d['goal']))
+
+        if 'inn' in d:
+            rows.append('ИНН: ' + str(d['inn']))
+
+        if 'kpp' in d:
+            rows.append('КПП: ' + str(d['kpp']))
     else:
-        rows.append('Банк корреспондент: ' + str(d['corr']))
-        rows.append('Банк получателя: ' + str(d['benef_bank']))
-        rows.append('Адрес банка получателя: ' + str(d['benef_bank_address']))
-        rows.append('SWIFT: ' + str(d['benef_swift']))
-        rows.append('Получатель: ' + str(d['owner']))
-        rows.append('Номер счета: ' + str(d['account']))
+        if 'corr' in d:
+            rows.append('Банк корреспондент: ' + str(d['corr']))
+        
+        if 'benef_bank' in d:
+            rows.append('Банк получателя: ' + str(d['benef_bank']))
+        
+        if 'benef_bank_address' in d:
+            rows.append('Адрес банка получателя: ' + str(d['benef_bank_address']))
+        
+        if 'benef_swift' in d:
+            rows.append('SWIFT: ' + str(d['benef_swift']))
+        
+        if 'owner' in d:
+            rows.append('Получатель: ' + str(d['owner']))
+        
+        if 'account' in d:
+            rows.append('Номер счета: ' + str(d['account']))
 
     return rows
 
